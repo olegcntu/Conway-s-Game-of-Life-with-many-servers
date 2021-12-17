@@ -1,16 +1,29 @@
 public class MatrixWork {
-    private int matrix[][];
-    private int count;
+    private Integer[][] matrix;
+    private final int count;
+    private final int startI;
+    private final int startJ;
+    private final int endI;
+    private final int endJ;
 
-    public MatrixWork(int matrix[][], int count) {
+    public MatrixWork(Integer[][] matrix, int count, int indexStart, int indexEnd) {
         this.matrix = matrix;
         this.count = count;
+        this.startI = indexStart / count + 1;
+        this.startJ = indexStart % count+1;
+        this.endI = indexEnd / count;
+        this.endJ = (indexEnd - 1) % count + 1;
+        System.out.println("start: " + startI + " " + startJ);
+        System.out.println("end: " + endI + " " + endJ);
     }
 
-    public int[][] matrixTransformation() {
+    public Integer[][] matrixTransformation() {
+        int i = startI;
+        int j = startJ;
+        int localCount = count;
 
-        for (int i = 1; i < count + 1; i++) {
-            for (int j = 1; j < count + 1; j++) {
+        for (; i < endI + 1; i++) {
+            for (; j < localCount + 1; j++) {
                 if (matrix[i][j] == 0) {
                     matrix = newCell(i, j);
                 }
@@ -19,13 +32,40 @@ public class MatrixWork {
                 }
 
             }
+            j = 1;
+            if (i == endI) {
+                localCount = endJ;
+            }
 
         }
-
+        matrixToStandard();
         return matrix;
     }
 
-    private int[][] newCell(int i, int j) {
+    private void matrixToStandard() {
+        int i = startI;
+        int j = startJ;
+        int localCount = count;
+
+        for (; i < endI + 1; i++) {
+            for (; j < localCount + 1; j++) {
+
+                if (matrix[i][j] == 2) {
+                    matrix[i][j]=1;
+                }
+                if (matrix[i][j] == 3){
+                    matrix[i][j]=0;
+                }
+            }
+            j = 1;
+            if (i == endI) {
+                localCount = endJ;
+            }
+        }
+    }
+
+
+    private Integer[][] newCell(int i, int j) {
 
         int cellCont = sumCells(i, j);
         if (cellCont == 3) {
@@ -36,13 +76,12 @@ public class MatrixWork {
     }
 
 
-    private int[][] dyingCellOrLive(int i, int j) {
+    private Integer[][] dyingCellOrLive(int i, int j) {
 
         int cellCont = sumCells(i, j);
         if (cellCont == 3 || cellCont == 2) {
             matrix[i][j] = 1;
-        }
-        else matrix[i][j] = 3;
+        } else matrix[i][j] = 3;
 
         return matrix;
     }
@@ -68,10 +107,10 @@ public class MatrixWork {
         if (matrix[i + 1][j - 1] == 1 || matrix[i + 1][j - 1] == 3) {
             sum++;
         }
-        if (matrix[i + 1][j] == 1 || matrix[i + 1][j]  == 3) {
+        if (matrix[i + 1][j] == 1 || matrix[i + 1][j] == 3) {
             sum++;
         }
-        if (matrix[i + 1][j + 1] == 1 || matrix[i + 1][j + 1]  == 3) {
+        if (matrix[i + 1][j + 1] == 1 || matrix[i + 1][j + 1] == 3) {
             sum++;
         }
         return sum;
