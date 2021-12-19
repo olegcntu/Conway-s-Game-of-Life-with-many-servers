@@ -1,8 +1,11 @@
+package client;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.rmi.RemoteException;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -41,7 +44,7 @@ public class UserForm extends JFrame {
                 timeStart= System.currentTimeMillis();
                 try {
                     fromTableToMatrix();
-                } catch (ExecutionException | InterruptedException ex) {
+                } catch (ExecutionException | InterruptedException | RemoteException ex) {
                     ex.printStackTrace();
                 }
 
@@ -88,7 +91,7 @@ public class UserForm extends JFrame {
         });
     }
 
-    private void fromTableToMatrix() throws ExecutionException, InterruptedException {
+    private void fromTableToMatrix() throws ExecutionException, InterruptedException, RemoteException {
         Component[] components = sc.getComponents();
         matrix = new Integer[count + 2][count + 2];
         int countOfComponent = 0;

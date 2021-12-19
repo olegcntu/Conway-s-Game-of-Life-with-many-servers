@@ -1,3 +1,5 @@
+package client;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -9,14 +11,17 @@ public class ThreadsDistribution {
     private final int count;
     private final int serverCount;
     private Integer[] arrResult;
+    private final int port = 1099;
 
 
-    public ThreadsDistribution(Integer[][] matrix, int count, int serverCount) {
+    public ThreadsDistribution(Integer[][] matrix, int count, int serverCount)  {
         this.matrix = matrix;
         this.count = count;
         this.serverCount = serverCount;
 
     }
+
+
 
     public Integer[][] distribution() throws ExecutionException, InterruptedException {
 
@@ -26,9 +31,7 @@ public class ThreadsDistribution {
 
 
         for (int i = 0; i < serverCount; i++) {
-            Future<Integer[]> future = executor.submit(new MyThread(matrix, count, serverPartitioning(i), serverPartitioning(i + 1)));
-            //System.out.println(serverPartitioning(i)+" "+serverPartitioning(i+1));
-
+            Future<Integer[]> future = executor.submit(new MyThread(matrix, count, serverPartitioning(i), serverPartitioning(i + 1),port,i));
             list.add(future);
 
         }

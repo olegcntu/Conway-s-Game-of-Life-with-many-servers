@@ -1,19 +1,29 @@
-public class MatrixWork {
-    private Integer[][] Newmatrix;
-    private final int count;
-    private final int size;
-    private final int indexStart;
-    private final int indexEnd;
+package server;
 
-    public MatrixWork(Integer[][] matrix, int count, int indexStart, int indexEnd) {
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.ExecutionException;
+
+public class MatrixWork extends UnicastRemoteObject implements Transformation{
+    private Integer[][] Newmatrix;
+    private int count;
+    private  int size;
+    private  int indexStart;
+    private  int indexEnd;
+
+    public MatrixWork() throws RemoteException {
+
+    }
+
+
+
+
+    public Integer[] matrixTransformation(Integer[][] matrix, int count, int indexStart, int indexEnd) {
         this.Newmatrix = matrix;
         this.count = count;
         this.size = indexEnd - indexStart;
         this.indexStart = indexStart;
         this.indexEnd = indexEnd;
-    }
-
-    public Integer[] matrixTransformation() {
         int indexDiapason = 0;
 
         for (int i = 1; i < count + 1; i++) {
@@ -84,11 +94,12 @@ public class MatrixWork {
     private int sumCells(int i, int j) {
         int sum = 0;
 
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
 
         if (Newmatrix[i - 1][j - 1] == 1 || Newmatrix[i - 1][j - 1] == 3) {
             sum++;
@@ -117,5 +128,6 @@ public class MatrixWork {
         }
         return sum;
     }
+
 
 }
