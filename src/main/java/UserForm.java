@@ -113,7 +113,6 @@ public class UserForm extends JFrame {
         int index = 0;
         for (int i = 1; i < count+1 ; i++) {
             for (int j = 1; j < count+1 ; j++) {
-                System.out.println("1");
                 if (matrix[i][j] == 0) {
                     components[index].setBackground(Color.WHITE);
                 } else {

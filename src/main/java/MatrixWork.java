@@ -1,6 +1,6 @@
 public class MatrixWork {
     //private final  Integer[][] matrix;
-    private  Integer[][] Newmatrix;
+    private Integer[][] Newmatrix;
     private final int count;
     private final int startI;
     private final int startJ;
@@ -8,17 +8,23 @@ public class MatrixWork {
     private final int endJ;
     private int size;
 
+    private int indexStart;
+    private int indexEnd;
+
     public MatrixWork(Integer[][] matrix, int count, int indexStart, int indexEnd) {
         this.Newmatrix = matrix;
         this.count = count;
-        this.startI = indexStart / count +1;
+        this.startI = indexStart / count + 1;
         this.startJ = indexStart % count + 1;
         this.endI = indexEnd / count;
         this.endJ = (indexEnd - 1) % count + 1;
-        this.size=indexEnd-indexStart;
+        this.size = indexEnd - indexStart;
+        this.indexStart = indexStart;
+        this.indexEnd = indexEnd;
     }
 
     public Integer[] matrixTransformation() {
+
         int i = startI;
         int j = startJ;
         int localCount = count;
@@ -39,43 +45,33 @@ public class MatrixWork {
             }
 
         }
-        return  matrixToStandard();
+        return matrixToStandard();
     }
 
     private Integer[] matrixToStandard() {
-        int i = startI;
-        int j = startJ;
-        int localCount = count;
         int a = 0;
-        Integer arrOfMatrix[] = new Integer[size];
-        for (; i < endI + 1; i++) {
-            for (; j < localCount + 1; j++) {
+        int f = 0;
 
-                if (Newmatrix[i][j] == 2) {
-                    Newmatrix[i][j] = 1;
+        Integer arrOfMatrix[] = new Integer[size];
+        for (int i = 1; i < count + 1; i++) {
+            for (int j = 1; j < count + 1; j++) {
+
+                if (a >= indexStart && a < indexEnd) {
+                    if (Newmatrix[i][j] == 2) {
+                        Newmatrix[i][j] = 1;
+                    }
+                    if (Newmatrix[i][j] == 3) {
+                        Newmatrix[i][j] = 0;
+                    }
+                    arrOfMatrix[f] = Newmatrix[i][j];
+                    f++;
                 }
-                if (Newmatrix[i][j] == 3) {
-                    Newmatrix[i][j] = 0;
-                }
-                arrOfMatrix[a]= Newmatrix[i][j];
                 a++;
             }
-            j = 1;
-            if (i == endI) {
-                localCount = endJ;
-            }
+
+
         }
 
-//        System.out.println("отдали");
-//        for(int i1=0;i1<count*count;i1++){
-//            if(i1%100==0){
-//                System.out.println();
-//            }
-//            System.out.print(arrOfMatrix[i1]+" ");
-//        }
-//        System.out.println("\n");
-//        System.out.println("___________");
-//        System.out.println("\n");
 
         return arrOfMatrix;
 

@@ -27,7 +27,8 @@ public class ThreadsDistribution {
 
 
         for (int i = 0; i < serverCount; i++) {
-            Future<Integer[]> future = executor.submit(new MyThread(matrix, count, serverPartitioning(i), (serverPartitioning(i + 1))));
+            Future<Integer[]> future = executor.submit(new MyThread(matrix, count, serverPartitioning(i), serverPartitioning(i+1 )));
+            //System.out.println(serverPartitioning(i)+" "+serverPartitioning(i+1));
 
             list.add(future);
 
@@ -44,6 +45,12 @@ public class ThreadsDistribution {
                 arrResult[a] = integer;
                 a++;
             }
+
+//            for(int o=0;o<100;o++) {
+//                if(o%10==0){System.out.println(); }
+//                System.out.print(arrResult[o]+" ");
+//            }
+
         }
 
 
@@ -58,7 +65,9 @@ public class ThreadsDistribution {
         if (i == serverCount) {
             return count * count;
         }
+
         return oneCount * i;
+
     }
 
     private Integer[][] fromArrayToMatrix() {
