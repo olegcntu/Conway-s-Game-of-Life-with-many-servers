@@ -3,6 +3,8 @@ import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
@@ -26,7 +28,7 @@ public class UserForm extends JFrame {
         super(title);
         this.setContentPane(mainPanel);
         this.setSize(600, 400);
-       // this.setExtendedState(MAXIMIZED_BOTH);
+        // this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
         sc = new TestPane(count);
         scroll.setViewportView(sc);
@@ -35,7 +37,13 @@ public class UserForm extends JFrame {
         button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fromTableToMatrix();
+                try {
+                    fromTableToMatrix();
+                } catch (ExecutionException ex) {
+                    ex.printStackTrace();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
 
             }
 
@@ -46,13 +54,19 @@ public class UserForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                try {
                     fromTableToMatrix();
+                } catch (ExecutionException ex) {
+                    ex.printStackTrace();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
 
             }
         });
     }
 
-    private void fromTableToMatrix() {
+    private void fromTableToMatrix() throws ExecutionException, InterruptedException {
         Component[] components = sc.getComponents();
         matrix = new Integer[count + 2][count + 2];
         int countOfComponent = 0;
@@ -61,27 +75,33 @@ public class UserForm extends JFrame {
 
                 if (i == 0 || j == 0 || i == count + 1 || j == count + 1) {
                     matrix[i][j] = 0;
-                    continue;
+                }else {
+                    if (components[countOfComponent++].getBackground().equals(Color.BLACK)) {
+                        matrix[i][j] = 1;
+                    } else matrix[i][j] = 0;
                 }
-                if (components[countOfComponent++].getBackground().equals(Color.BLACK)) {
-                    matrix[i][j] = 1;
-                } else matrix[i][j] = 0;
             }
         }
-        ThreadsDistribution threadsDistribution=new ThreadsDistribution(matrix, count,serverCount());
-//        MatrixWork matrixWork = new MatrixWork(matrix, count);
-//        matrix = matrixWork.matrixTransformation();
-        matrix=threadsDistribution.distribution();
+
+//        System.out.println("приняли c таблицы");
+//        for (int i = 1; i < count+1; i++) {
+//            for (int j = 1; j < count+1;j++) {
+//                System.out.print(matrix[i][j]+" ");
+//            }
+//            System.out.println();
+//        }
+
+        ThreadsDistribution threadsDistribution = new ThreadsDistribution(matrix, count, serverCount());
+        matrix = threadsDistribution.distribution();
         fromMatrixToTable(components);
     }
 
 
-    private int serverCount(){
-        int SCount=1;
+    private int serverCount() {
+        int SCount = 1;
         try {
-             SCount=Integer.parseInt(textArea1.getText());
-        }
-        catch (Exception ignored){
+            SCount = Integer.parseInt(textArea1.getText());
+        } catch (Exception ignored) {
             textArea1.setText("ERROR");
         }
         return SCount;
@@ -91,15 +111,15 @@ public class UserForm extends JFrame {
     private void fromMatrixToTable(Component[] components) {
 
         int index = 0;
-        for (int i = 1; i < count + 1; i++) {
-            for (int j = 1; j < count + 1; j++) {
-
+        for (int i = 1; i < count+1 ; i++) {
+            for (int j = 1; j < count+1 ; j++) {
+                System.out.println("1");
                 if (matrix[i][j] == 0) {
                     components[index].setBackground(Color.WHITE);
                 } else {
                     components[index].setBackground(Color.BLACK);
                 }
-                sc.setComponentZOrder(components[index], 99);
+                sc.setComponentZOrder(components[index], index);
 
                 index++;
             }
