@@ -3,11 +3,8 @@ import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import static java.lang.Thread.sleep;
 
 public class UserForm extends JFrame {
     private JPanel mainPanel;
@@ -15,9 +12,13 @@ public class UserForm extends JFrame {
     private JButton button2;
     private JButton runButton;
     private JTextArea textArea1;
+    private JButton randomButton;
+    private JTextArea textArea2;
     private final JPanel sc;
     private final int count = 10;
     private Integer[][] matrix;
+    private long timeStart;
+
 
     public static void main(String[] args) {
         JFrame frame = new UserForm("RMI calculator");
@@ -37,11 +38,10 @@ public class UserForm extends JFrame {
         button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                timeStart= System.currentTimeMillis();
                 try {
                     fromTableToMatrix();
-                } catch (ExecutionException ex) {
-                    ex.printStackTrace();
-                } catch (InterruptedException ex) {
+                } catch (ExecutionException | InterruptedException ex) {
                     ex.printStackTrace();
                 }
 
@@ -53,15 +53,37 @@ public class UserForm extends JFrame {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int index = 0;
+                Component[] components = sc.getComponents();
+                for (int i = 1; i < count + 1; i++) {
+                    for (int j = 1; j < count + 1; j++) {
+                        components[index].setBackground(Color.WHITE);
+                        sc.setComponentZOrder(components[index], index);
 
-                try {
-                    fromTableToMatrix();
-                } catch (ExecutionException ex) {
-                    ex.printStackTrace();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                        index++;
+                    }
                 }
 
+            }
+        });
+        randomButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = 0;
+                Component[] components = sc.getComponents();
+                for (int i = 1; i < count + 1; i++) {
+                    for (int j = 1; j < count + 1; j++) {
+                        Random random = new Random();
+                        if (random.nextBoolean()) {
+                            components[index].setBackground(Color.WHITE);
+                        } else {
+                            components[index].setBackground(Color.BLACK);
+                        }
+
+                        sc.setComponentZOrder(components[index], index);
+                        index++;
+                    }
+                }
             }
         });
     }
@@ -75,7 +97,7 @@ public class UserForm extends JFrame {
 
                 if (i == 0 || j == 0 || i == count + 1 || j == count + 1) {
                     matrix[i][j] = 0;
-                }else {
+                } else {
                     if (components[countOfComponent++].getBackground().equals(Color.BLACK)) {
                         matrix[i][j] = 1;
                     } else matrix[i][j] = 0;
@@ -83,13 +105,6 @@ public class UserForm extends JFrame {
             }
         }
 
-//        System.out.println("приняли c таблицы");
-//        for (int i = 1; i < count+1; i++) {
-//            for (int j = 1; j < count+1;j++) {
-//                System.out.print(matrix[i][j]+" ");
-//            }
-//            System.out.println();
-//        }
 
         ThreadsDistribution threadsDistribution = new ThreadsDistribution(matrix, count, serverCount());
         matrix = threadsDistribution.distribution();
@@ -111,8 +126,8 @@ public class UserForm extends JFrame {
     private void fromMatrixToTable(Component[] components) {
 
         int index = 0;
-        for (int i = 1; i < count+1 ; i++) {
-            for (int j = 1; j < count+1 ; j++) {
+        for (int i = 1; i < count + 1; i++) {
+            for (int j = 1; j < count + 1; j++) {
                 if (matrix[i][j] == 0) {
                     components[index].setBackground(Color.WHITE);
                 } else {
@@ -123,6 +138,9 @@ public class UserForm extends JFrame {
                 index++;
             }
         }
+
+        textArea2.setText(String.valueOf(System.currentTimeMillis()-timeStart)+" millis");
+
 
 
     }

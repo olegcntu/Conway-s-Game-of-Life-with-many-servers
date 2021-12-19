@@ -5,10 +5,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ThreadsDistribution {
-    private Integer[][] matrix;
-    private Integer[][] newMatrix;
+    private final Integer[][] matrix;
     private final int count;
-    private int serverCount;
+    private final int serverCount;
     private Integer[] arrResult;
 
 
@@ -27,14 +26,14 @@ public class ThreadsDistribution {
 
 
         for (int i = 0; i < serverCount; i++) {
-            Future<Integer[]> future = executor.submit(new MyThread(matrix, count, serverPartitioning(i), serverPartitioning(i+1 )));
+            Future<Integer[]> future = executor.submit(new MyThread(matrix, count, serverPartitioning(i), serverPartitioning(i + 1)));
             //System.out.println(serverPartitioning(i)+" "+serverPartitioning(i+1));
 
             list.add(future);
 
         }
 
-        int a = 0;
+        int index = 0;
         arrResult = new Integer[count * count];
         Integer[] localArr;
 
@@ -42,15 +41,9 @@ public class ThreadsDistribution {
             localArr = fut.get();
 
             for (Integer integer : localArr) {
-                arrResult[a] = integer;
-                a++;
+                arrResult[index] = integer;
+                index++;
             }
-
-//            for(int o=0;o<100;o++) {
-//                if(o%10==0){System.out.println(); }
-//                System.out.print(arrResult[o]+" ");
-//            }
-
         }
 
 
@@ -72,12 +65,12 @@ public class ThreadsDistribution {
 
     private Integer[][] fromArrayToMatrix() {
 
-        newMatrix = new Integer[count + 1][count + 1];
-        int a = 0;
+        Integer[][] newMatrix = new Integer[count + 1][count + 1];
+        int index = 0;
         for (int i = 1; i < count + 1; i++) {
             for (int j = 1; j < count + 1; j++) {
-                newMatrix[i][j] = arrResult[a];
-                a++;
+                newMatrix[i][j] = arrResult[index];
+                index++;
             }
         }
 
